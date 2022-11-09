@@ -2,16 +2,13 @@
   <div class="Box-bm-root">
     <div class="Box-header-bodies">Minhas Figurinhas</div>
     <div class="Box-body-bodies">
-      <div class="Box-pu-geral-info">
-       
-      </div>
-      <div className="Box-mi-root">
-          <input className="Input-mi" id="i-name" name="f-name" type="text" :placeholder="name" />
+      <div class="Box-mf-sticker">
+        <div class="Box-mf-info"></div>
+        <div className="Box-mf-actions">
+          <input className="Input-mi" />
         </div>
-      <button class="Button-pu-save">
-        SALVAR
-      </button>
-
+      </div>
+      <button class="Button-pu-save">SALVAR</button>
     </div>
   </div>
 </template>
@@ -28,20 +25,52 @@ export default {
   mounted() {
     const token = localStorage.getItem("token");
     api
-      .existLocalization(token)
+      .stickers(token)
       .then((res) => {
-        if (res.status === 204) {
-          this.existLocalization = false;
-        }
+        console.log(res.data.stickers);
       })
       .catch((err) => {
-        console.log(err);
+        if (err.response.status === 401) {
+          this.$router.replace("/login-user");
+        } else {
+          this.$router.replace("/critical-error");
+        }
       });
   },
 };
 </script>
   
 <style scoped>
+.Box-mf-sticker {
+  display: flex;
+  height: 150px;
+  width: 90px;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+}
+
+.Box-mf-info {
+  display: flex;
+  height: 90px;
+  width: 90px;
+  border: 2px solid rgb(135, 43, 77);
+  border-radius: 5px;
+}
+.Box-mf-actions {
+  display: flex;
+  height: 40px;
+  width: 100%;
+  justify-content: center;
+  align-content: center;
+}
+
+.Input-mi {
+  display: flex;
+  width: 40px;
+  height: 40px;
+}
+
 .Box-bm-root {
   display: flex;
   flex-direction: column;
@@ -69,7 +98,7 @@ export default {
 
 .Box-pu-geral-info {
   display: grid;
-  grid-template-areas: 'a a';
+  grid-template-areas: "a a";
   height: 200px;
   width: 9%;
   border-radius: 10px;
@@ -79,7 +108,7 @@ export default {
 
 .Box-pu-localization {
   display: grid;
-  grid-template-areas: 'a a';
+  grid-template-areas: "a a";
   height: 200px;
   width: 95%;
   border-radius: 10px;

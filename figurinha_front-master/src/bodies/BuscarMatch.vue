@@ -4,8 +4,8 @@
     <div class="Box-body-bodies">
       <div class="Box-card-white" v-if="!existLocalization">
         <span class="Span-bm-info">
-          Ops, parece que você ainda não atualizou sua localização. Atualize seu perfil
-          para continuar.
+          Ops, parece que você ainda não atualizou sua localização. Atualize seu
+          perfil para continuar.
         </span>
       </div>
     </div>
@@ -31,7 +31,11 @@ export default {
         }
       })
       .catch((err) => {
-        console.log(err);
+        if (err.response.status === 401) {
+          this.$router.replace("/login-user");
+        } else {
+          this.$router.replace("/critical-error");
+        }
       });
   },
 };
@@ -45,7 +49,7 @@ export default {
   align-items: center;
   height: 100%;
   width: 100%;
-  background-color:linear-gradient(rgb(229, 120, 160), rgb(135, 43, 77));
+  background-color: linear-gradient(rgb(229, 120, 160), rgb(135, 43, 77));
 }
 
 .Box-card-white {

@@ -126,11 +126,35 @@ const api = {
                     reject(err);
                 })
         })
-    }, 
+    },
 
     updatePerfil: async (name, email, tel, city, district, place, token) => {
         return new Promise((resolve, reject) => {
-            instance.post('/v1/client/update-perfil', { name: name, email: email, tel:tel, city:city, district:district, place:place,  token: token })
+            instance.post('/v1/client/update-perfil', { name: name, email: email, tel: tel, city: city, district: district, place: place, token: token })
+                .then((res) => {
+                    resolve(res);
+                })
+                .catch((err) => {
+                    reject(err);
+                })
+        })
+    },
+
+    updateStickers: async (stickers, token) => {
+        return new Promise((resolve, reject) => {
+            instance.post('/v1/client/update-stickers', { stickers: stickers, token: token })
+                .then((res) => {
+                    resolve(res);
+                })
+                .catch((err) => {
+                    reject(err);
+                })
+        })
+    },
+
+    stickers: async (token) => {
+        return new Promise((resolve, reject) => {
+            instance.get('/v1/client/stickers', { headers: { token: token } })
                 .then((res) => {
                     resolve(res);
                 })
