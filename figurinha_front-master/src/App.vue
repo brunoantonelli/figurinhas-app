@@ -55,6 +55,8 @@ body {
   width: 80%;
   max-width: 320px;
   min-width: 190px;
+  background-color: rgb(135, 43, 77);
+  color: white;
 }
 
 .Box-card-white {

@@ -34,6 +34,7 @@ export default {
 }
 
 .Box-card-blue {
+    
     height: 130px;
 }
 

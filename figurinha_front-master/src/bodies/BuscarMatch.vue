@@ -8,6 +8,10 @@
           perfil para continuar.
         </span>
       </div>
+      <div class="Box-buscar">
+        <div class="Box-usuarios">
+      </div>
+      </div>  
     </div>
   </div>
 </template>
@@ -42,6 +46,15 @@ export default {
 </script>
 
 <style scoped>
+
+.Box-buscar {
+  display: grid;
+  grid-template-columns: 1fr 1fr ;
+  grid-template-rows: 1fr 1fr;
+  grid-gap: 10px;
+  justify-content: center;
+  align-content: center;
+}
 .Box-bm-root {
   display: flex;
   flex-direction: column;
@@ -59,4 +72,13 @@ export default {
 .Span-bm-info {
   font-weight: bold;
 }
+
+.Box-usuarios {
+  display: flex;
+  height: 90px;
+  width: 350px;
+  border: 2px solid rgb(135, 43, 77);
+  border-radius: 5px;
+}
+
 </style>
