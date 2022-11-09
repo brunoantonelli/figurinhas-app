@@ -17,12 +17,13 @@ module.exports = {
             if (client) {
                 const hash = client.password;
                 const id_client = client._id;
+                const email = client.email;
                 const name = client.name;
                 const activeAccount = client.activeAccount;
 
                 bcrypt.compare(password, hash).then((result) => {
                     if (result && activeAccount) {
-                        const token = jwt.createToken({ id: id_client, name: name }, { expiresIn: '30min' });
+                        const token = jwt.createToken({ id: id_client, name: name, email: email }, { expiresIn: '30min' });
                         res.status(httpRes.ok.status).json({ token: token });
                     } else {
                         res.status(httpRes.noContent.status).json(httpRes.noContent.message);
@@ -46,9 +47,16 @@ module.exports = {
                 console.log(name, email, password, link)
                 return res.status(httpRes.badRequest.status).json(httpRes.badRequest.message);
             }
+            let emptyStickers = [];
+            for (let i = 0; i < 670; i++) {
+                emptyStickers.push({ code: i, amount: 0 });
+            }
             Client.insertOne({
                 name: name,
                 email: email,
+                tel: null,
+                localization: null,
+                stickers: emptyStickers,
                 password: await bcrypt.cipher(password),
                 activeAccount: false,
             }).then((_) => {
@@ -77,7 +85,7 @@ module.exports = {
                 return res.status(httpRes.badRequest.status).json(httpRes.badRequest.message);
             }
             const login = tokenDecoded.email;
-            Client.update(
+            Client.updateOne(
                 {
                     email: login,
                 },
@@ -273,9 +281,9 @@ module.exports = {
                 })
                 .then((_) => {
                     DisabledJWT.insertOne({ token: token, expire: `${tokenDecoded.exp}000` })
-                        .then((data) => {
-                            console.log(data);
-                            res.status(httpRes.ok.status).json({newToken: ''});
+                        .then((_) => {
+                            const newToken = jwt.createToken({ id: tokenDecoded.id, name: name, email: email }, { expiresIn: '30min' })
+                            res.status(httpRes.ok.status).json({ newToken: newToken });
                         })
                         .catch((err) => {
                             console.log(err);
@@ -285,7 +293,55 @@ module.exports = {
                 .catch((err) => {
                     console.log(err);
                     res.status(httpRes.internalServerError.status).json(httpRes.internalServerError.message);
+                })
+        }
+        catch (err) {
+            console.log(err);
+            res.status(httpRes.internalServerError.status).json(httpRes.internalServerError.message);
+        }
+    },
 
+    getStickers: async (req, res) => {
+        const { tokenDecoded } = req.headers;
+        if (!tokenDecoded) {
+            return res.status(httpRes.badRequest.status).json(httpRes.badRequest.message);
+        }
+        try {
+            const id = tokenDecoded.id;
+            Client.findOne({ _id: mongoose.Types.ObjectId(id) })
+                .then((data) => {
+                    res.status(httpRes.ok.status).json({ stickers: data.stickers })
+                })
+                .catch((err) => {
+                    console.log(err);
+                    res.status(httpRes.internalServerError.status).json(httpRes.internalServerError.message);
+                })
+        }
+        catch (err) {
+            console.log(err);
+            res.status(httpRes.internalServerError.status).json(httpRes.internalServerError.message);
+        }
+    },
+
+    updateStickers: async (req, res) => {
+        const { tokenDecoded } = req.headers;
+        const { stickers } = req.body;
+        if (!tokenDecoded || !stickers) {
+            return res.status(httpRes.badRequest.status).json(httpRes.badRequest.message);
+        }
+        try {
+            const id = tokenDecoded.id;
+            Client.updateOne({ _id: mongoose.Types.ObjectId(id) }, {
+                $set: {
+                    stickers: stickers
+                }
+            })
+                .then(() => {
+                    res.status(httpRes.ok.status).json(httpRes.ok.message)
+                })
+                .catch((err) => {
+                    console.log(err);
+                    res.status(httpRes.internalServerError.status).json(httpRes.internalServerError.message);
                 })
         }
         catch (err) {

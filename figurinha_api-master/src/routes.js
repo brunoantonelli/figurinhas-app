@@ -27,5 +27,8 @@ routes.get('/v1/client/info-perfil', jwt.verifyToken, clientController.infoPerfi
 
 routes.post('/v1/client/update-perfil', jwt.verifyToken, clientController.updatePerfil);
 
+routes.get('/v1/client/stickers', jwt.verifyToken, clientController.getStickers);
+
+routes.post('/v1/clients/update-stickers', jwt.verifyToken, clientController.updateStickers);
 
 module.exports = routes;
